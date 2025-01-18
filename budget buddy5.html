@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Budget Buddy</title>
+    <link href="styles.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <div id="welcomeScreen" class="screen">
+        <h1 class="fade-in">Welcome to Budget Buddy</h1>
+        <button class="btn" id="startButton">Get Started</button>
+    </div>
+
+    <div id="formScreen" class="screen" style="display: none;">
+        <h1 class="fade-in">Tell Us About Yourself</h1>
+        <form id="budgetForm">
+            <div class="mb-3">
+                <label for="occupation" class="form-label">What is your occupation?</label>
+                <input type="text" class="form-control" id="occupation" required>
+            </div>
+            <div class="mb-3">
+                <label for="familyMembers" class="form-label">Number of family members:</label>
+                <input type="number" class="form-control" id="familyMembers" required>
+            </div>
+            <div class="mb-3">
+                <label for="income" class="form-label">Monthly income (in Rupees):</label>
+                <input type="number" class="form-control" id="income" required>
+            </div>
+            <div class="mb-3">
+                <label for="dailySpendings" class="form-label">Approximate monthly expenditure (in Rupees):</label>
+                <input type="number" class="form-control" id="monthlyExpenditure" required>
+            </div>
+            <button type="submit" class="btn">Submit</button>
+        </form>
+    </div>
+
+    <div id="resultsScreen" class="screen" style="display: none;">
+        <h1 class="fade-in">Your Budget Suggestions in Percentage(%)</h1>
+        <canvas id="budgetChart" width="400" height="400"></canvas>
+        <p style="font-size: small; text-align: center;">This is just a suggestion</p>
+    </div>
+
+    <script>
+        const welcomeScreen = document.getElementById('welcomeScreen');
+        const formScreen = document.getElementById('formScreen');
+        const resultsScreen = document.getElementById('resultsScreen');
+        const startButton = document.getElementById('startButton');
+        const budgetForm = document.getElementById('budgetForm');
+
+        startButton.addEventListener('click', () => {
+            welcomeScreen.style.display = 'none';
+            formScreen.style.display = 'block';
+        });
+
+        budgetForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+
+            // Collect user input
+            const occupation = document.getElementById('occupation').value;
+            const familyMembers = parseInt(document.getElementById('familyMembers').value);
+            const income = parseFloat(document.getElementById('income').value);
+            const monthlyExpenditure = parseFloat(document.getElementById('monthlyExpenditure').value);
+
+            // Budget recommendations
+            // Budget allocation percentages
+            const giving = income * 0.1;
+            const saving = income * 0.2;
+            const food = income * 0.15;
+            const housing = income * 0.3;
+            const health = income * 0.1;
+            const transportation = income * 0.1;
+            const personalMisc = income * 0.05;
+
+            // Show results screen
+            formScreen.style.display = 'none';
+            resultsScreen.style.display = 'block';
+
+            const ctx = document.getElementById('budgetChart').getContext('2d');
+            new Chart(ctx, {
+                type: 'pie',
+                data: {
+                    labels: ['Giving', 'Saving', 'Food', 'Housing', 'Health', 'Transportation', 'Personal & Miscellaneous'],
+                    datasets: [{
+                        data: [(giving / income) * 100, (saving / income) * 100, (food / income) * 100, (housing / income) * 100, (health / income) * 100, (transportation / income) * 100, (personalMisc / income) * 100],
+                        backgroundColor: ['#FF6384', '#36A2EB', '#FFCE56', '#4BC0C0', '#9966FF', '#FF9F40', '#C9CBCF', '#E8A9E1', '#60A4F4', '#F48F7B'],
+                    }],
+                },
+                options: {
+                    responsive: true,
+                    plugins: {
+                        legend: {
+                            position: 'top',
+                            labels: {
+                                color: 'white' // Set legend text color to white
+                            }
+                        },
+                    },
+                },
+            });
+        });
+    </script>
+</body>
+</html>
